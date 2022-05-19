@@ -194,5 +194,6 @@ char			**check_local(char **arguments, t_list *local);
 
 //ft_split_quotes.c
 char			**ft_split_quotes(const char *str, char c);
+void			quote_checker(char str, bool *dq, bool *sq);
 
 #endif

@@ -20,24 +20,100 @@
 // Aber dann funktioniert trim nicht......
 // Ich koennte &arguments[i][j] trimmen, jedes Mal.......
 
-char	**get_variable_values(char **arguments, t_list my_envp)
+//was will ich denn zurueckgeben? Eigentlich muss ich j uebergeben?
+//mehrere $ hitereinander werden beachtet - selbst wenn dq nicht an ist, kann ich nicht bis ans Ende gehen...
+char	*get_variable_value(char *argument, t_list my_envp, bool *sq, bool *dq, int j)
 {
-	int	i;
-	int	j;
+	char	*arg_var;
+	char	*var;
+	int		i;
+
+	i = 0;
+	if (*sq == true)
+		return (argument);
+	//Wie groß kann arg_var sein? Variable kann länger sein als Varname
+	// Mit strjoin arbeiten? 
+	arg_var = malloc(ft_strlen(arg_var));
+	if (!arg_var)
+		return (NULL);
+	while (i < j)
+	{
+		arg_var[i] = argument[i];
+		i++;
+	}
+	var = malloc(ft_strlen(&argument[i]) + 1);
+	if (!var)
+		return (NULL);
+	if (*dq == true)
+	{
+
+		while (argument[i] != "\"")
+		{
+			var[i - j] = argument[i];
+			i++;
+		}
+	}
+	else
+	{
+
+	}
+	var = ;//Hierein die Varaible kopieren (ft_strdup?), wie ist das mit ""?
+	//Durchsuche my_envp fuer die Variable
+	//Fuege Variablenwert in arg_var ein
+	free(var);
+	// falls noch mehr in argument steht, hier in arg_var kopieren
+	arg_var[i] = '\0';
+	free(argument);
+	return (arg_var);
+}
+
+char	*delete_quote(char *argument, int j)
+{
+	int		i;
+	char	*copy;
+
+	i = 0;
+	copy = malloc(ft_strlen(argument));
+	if (!copy)
+		return (NULL);
+	while (argument[i] != '\0')
+	{
+		if (i != j)
+			copy[i] = argument[i];
+		i++;
+	}
+	copy[i] = '\0';
+	free(argument);
+	return (copy);
+}
+
+char	**get_quotes_changed(char **arguments, t_list my_envp)
+{
+	int		i;
+	int		j;
+	bool	*dq;
+	bool	*sq;
 
 	i = 0;
 	j = 0;
+	*dq = false;
+	*sq = false;
 	while (arguments[i] != NULL)
 	{
 		while (arguments[i][j] != '\0')
 		{
-			if (arguments[i][j] == '\'')
-				arguments[i] = ft_strtrim(arguments[i], "'");
-			else if (arguments[i][j] == '"')
+			if (arguments[i][j] == '\'' && *dq == false)
 			{
-				arguments[i] = ft_strtrim(arguments[i], "\"");
-				if (arguments[i][1] == "")
+				quote_checker(arguments[i][j], dq, sq);
+				arguments[i] = delete_quote(arguments[i], j);
 			}
+			else if (arguments[i][j] == '\"' && *sq == false)
+			{
+				arguments[i] = delete_quote(arguments[i], j);
+				quote_checker(arguments[i][j], dq, sq);
+			}
+			else if (arguments[i][j] == "$" && *sq == false)
+				arguments[i] = get_variable_value(&(arguments[i][j]), my_envp, sq, dq, j);
 			j++;
 		}
 		i++;
