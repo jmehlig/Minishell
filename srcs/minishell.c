@@ -22,11 +22,13 @@
 
 //was will ich denn zurueckgeben? Eigentlich muss ich j uebergeben?
 //mehrere $ hitereinander werden beachtet - selbst wenn dq nicht an ist, kann ich nicht bis ans Ende gehen...
-char	*get_variable_value(char *argument, t_list my_envp, bool *sq, bool *dq, int j)
+// Wenn nicht dq == true, was passiert mit Doublequote im Variablenname
+char	*get_variable_value(char *argument, t_list *my_envp, bool *sq, bool *dq, int j)
 {
 	char	*arg_var;
 	char	*var;
 	int		i;
+	t_list	*var_list;
 
 	i = 0;
 	if (*sq == true)
@@ -46,8 +48,7 @@ char	*get_variable_value(char *argument, t_list my_envp, bool *sq, bool *dq, int
 		return (NULL);
 	if (*dq == true)
 	{
-
-		while (argument[i] != "\"")
+		while (argument[i] != '\"')
 		{
 			var[i - j] = argument[i];
 			i++;
@@ -55,12 +56,24 @@ char	*get_variable_value(char *argument, t_list my_envp, bool *sq, bool *dq, int
 	}
 	else
 	{
-
+		while (argument[i] != '\0' && argument[i] != '$')
+		{
+			var[i - j] = argument[i];
+			i++;
+		}
 	}
-	var = ;//Hierein die Varaible kopieren (ft_strdup?), wie ist das mit ""?
+	var[i - j] = '\0';
+	var_list = check_already_there(&argument, my_envp, j, i);
+	// Also diese Zeile ist der Horror, bitte kürzen!!!!
+	// Probiere statt substr &(var_list->content[i - j + 1])
+	arg_var = ft_strjoin(arg_var, ft_substr(var_list->content, ft_strlen(var) + 1, ft_strlen(var_list->content) - ft_strlen(var) - 1)));
 	//Durchsuche my_envp fuer die Variable
 	//Fuege Variablenwert in arg_var ein
 	free(var);
+	if (argument[i] != '\0')
+	{
+		arg_var = ft_strjoin(arg_var, &(argument[i]));
+	}
 	// falls noch mehr in argument steht, hier in arg_var kopieren
 	arg_var[i] = '\0';
 	free(argument);
