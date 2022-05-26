@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+         #
+#    By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/03 16:19:01 by jmehlig           #+#    #+#              #
-#    Updated: 2022/05/13 13:45:32 by hkalyonc         ###   ########.fr        #
+#    Updated: 2022/05/26 11:57:28 by jmehlig          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -24,6 +24,7 @@ SRCS =	$(SRCS_PATH)minishell.c \
 		$(SRCS_PATH)ast_node.c \
 		$(SRCS_PATH)echo.c \
 		$(SRCS_PATH)ft_split_quotes.c \
+		$(SRCS_PATH)quotes_remove.c \
 
 GET_NEXT_LINE_SRCS =	$(GET_NEXT_LINE_PATH)get_next_line.c \
 						$(GET_NEXT_LINE_PATH)get_next_line_utils.c \

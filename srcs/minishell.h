@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 12:36:09 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/17 15:12:44 by hkalyonc         ###   ########.fr       */
+/*   Updated: 2022/05/26 11:56:48 by jmehlig          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,19 +14,26 @@
 # define MINISHELL_H
 
 # define PIPETOKEN_NOTFOUND -1
-# define MINTOKEN_PIPE 3
-# define MINTOKEN_REDIRECTION 3
-# define RANGE_FINDREDIRECTION 2
+# define MINTOKEN_PIPE 3				//still needed???
+# define MINTOKEN_IOCHANGE 3			//still needed???
+# define MINTOKEN_REDIRECTION 2
+# define PARSERANGE_NOREDIRECTION -1
+
+# define FILENAME_HEREDOC "heredoc_tmp"
 
 # define PATH_IDENTIFIER "PATH="
 # define PATH_DELIMITER ':'
-# define PATH_NOTFOUND -1
 
-# define ERRORMESSAGE_NOPATH "no path in environment"
+# define ERRORMESSAGE_PATHNOTFOUND "no path in environment"
 # define ERRORMESSAGE_COMMANDNOTFOUND "command not found"
 # define ERRORMESSAGE_EXIT "exit: too many arguments"
 
-# define MODE_OPENOUTFILE 0644
+# define PARSERERRORMSG_GENERAL "syntax error near unexpected token `newline'"
+# define PARSERERRORMSG_PIPE "syntax error near unexpected token `|'"
+
+# define OFLAG_TRUNC O_CREAT | O_WRONLY | O_TRUNC
+# define OFLAG_APPEND O_CREAT | O_WRONLY | O_APPEND
+# define MODE_CREATEFILE 0644
 
 # define INDEX_COMMANDNAME 0
 # define LASTPROCESSID_NOCHILDPROCESS -1
@@ -45,20 +52,18 @@
 
 typedef struct s_simple_command
 {
-	//dont really need this, since arguments array is null terminated
 	int		number;
 	char	**arguments;
-}		t_simple_command;
+	int		fd_in;
+	int		fd_out;
+	bool	fd_failed;
+}	t_simple_command;
 
 typedef struct s_command_table
 {
 	int					number;
 	t_simple_command	*simple_command;
-	char				*infile;
-	char				*outfile;
-	char				*here_doc;
-	char				*append;
-}		t_command_table;
+}	t_command_table;
 
 typedef enum e_tokentype
 {
@@ -84,14 +89,15 @@ typedef enum e_astnodetype
 	NODETYPE_JOB = 0,
 	NODETYPE_COMMAND = 1,
 	NODETYPE_SIMPLECOMMAND = 2,
-	NODETYPE_ARGUMENTS = 3,
-	NODETYPE_PATHNAME = 4,
-	NODETYPE_INFILE = 5,
-	NODETYPE_OUTFILE = 6,
-	NODETYPE_HEREDOC = 7,
-	NODETYPE_APPEND = 8,
-	NODETYPE_ARG = 9,
-	NODETYPE_EMPTY = 10
+	NODETYPE_IOCHANGE = 3,
+	NODETYPE_ARGUMENTS = 4,
+	NODETYPE_PATHNAME = 5,
+	NODETYPE_INFILE = 6,
+	NODETYPE_OUTFILE = 7,
+	NODETYPE_HEREDOC = 8,
+	NODETYPE_APPEND = 9,
+	NODETYPE_ARG = 10,
+	NODETYPE_EMPTY = 11
 }	t_astnodetype;
 
 typedef struct s_ast_node t_ast_node;
@@ -126,19 +132,40 @@ typedef struct s_fd_pair
 	int	out;
 }	t_fd_pair;
 
+typedef struct s_fd_utils
+{
+	t_fd_pair	command_fd;
+	t_fd_pair	default_fd;
+	t_fd_pair	empty_pipe_fd;
+}	t_fd_utils;
+
 typedef enum e_errno_custom
 {
+	ERRNO_PATHNOTFOUND = 120,
 	ERRNO_COMMANDNOTFOUND = 127,
-	ERRNO_BUILTIN = 258
+	ERRNO_BUILTIN = 257,				//wrong!
+	ERRNO_PARSER = 258
 }	t_errno_custom;
 
+typedef enum e_parser_error
+{
+	PARSERERROR_NOERROR = 0,
+	PARSERERROR_GENERAL = 1,
+	PARSERERROR_PIPE = 2
+}	t_parser_error;
+
 //minishell.c
+void			process_input(char *input, t_list **my_envp, t_list **local);
 void			ft_free_2d_array_nullterminated(void **array);
 void			ft_destroy(void *ptr);
 t_token			*ft_build_tokens(char *input);
 void			local_variables(char *arguments, t_list **local);
-void			del_lst_linked_env(void *content);
 void			write_errormessage(const char *additional_message);
+void			ft_free_lst(t_list **lst);
+void			free_content(void *content);
+void			ft_lstdelkey(t_list **lst, void *key, void (*del)(void *));
+//delete
+void			print_token(t_token *token);
 
 //lexer.c
 t_token			*build_tokens(char *input, int *number_of_tokens);
@@ -152,14 +179,15 @@ void			free_token(t_token *token);
 
 //parser.c
 int				built_in_check(char **arguments, t_list *my_envp);
-int				non_pipe_built_in_check(int command_id, char **arguments,
-					t_list *my_envp, t_list *local, t_command_table *command_table);
+int				non_pipe_built_in_check(int command_id,
+					t_command_table *command_table, t_list **my_envp,
+					t_list **local);
 /*
 t_command_table	parser(t_token *token);
 t_token			*ft_built_in(t_token *token);
 int				amount_commands(t_token *token);
 */
-t_command_table	*build_command_table(t_token *token, int number_of_tokens);
+t_command_table	*build_command_table(t_token **token, int number_of_tokens);
 void			free_command_table(t_command_table *command_table);
 void			fill_command_table(t_command_table *command_table,
 					t_ast_node *ast_node, int *index_simple_command,
@@ -170,8 +198,8 @@ t_ast_node		*create_ast_node(t_astnodetype node_type);
 void			free_ast_node(t_ast_node *ast_node);
 
 //executor.c
-void			execute(t_command_table *command_table, char *envp[],
-					t_list *lst_env, t_list *local);
+void			execute(t_command_table *command_table, t_list **my_envp,
+					t_list **local);
 
 //echo.c
 int				ft_echo(char **arguments);
@@ -186,11 +214,15 @@ t_list			*linked_envp(char *envp[]);
 void			my_pwd(t_list *my_envp, char **arguments);
 int				my_export(char **arguments, t_list **my_envp, t_list *local);
 int				my_cd(char **arguments, t_list **my_envp);
-void			my_exit(t_list *my_envp, char **arguments,
-					t_command_table *command_table);
+void			my_exit(t_list **my_envp, char **arguments,
+					t_command_table *command_table, t_list **local);
 t_list			*check_already_there(char **arguments, t_list *my_envp, int i, int j);
 char			**check_local(char **arguments, t_list *local);
 
+//quotes_remove.c
+char			*get_variable_value(char *argument, t_list *my_envp, bool *sq, bool *dq, int j);
+char			*delete_quote(char *argument, int j);
+char			**get_quotes_changed(char **arguments, t_list *my_envp);
 
 //ft_split_quotes.c
 char			**ft_split_quotes(const char *str, char c);

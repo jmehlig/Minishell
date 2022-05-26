@@ -6,7 +6,7 @@
 /*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/09 13:07:06 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/17 19:54:59 by jmehlig          ###   ########.fr       */
+/*   Updated: 2022/05/25 14:43:02 by jmehlig          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static char	*ft_strtrim_cpy(char *ptr, char const *s1, size_t start, size_t end)
 		start++;
 	}
 	ptr[i] = 0;
-	free (s1);
+	free((void *)s1);
 	return (ptr);
 }
 

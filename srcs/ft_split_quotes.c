@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/09 13:08:37 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/17 20:15:50 by jmehlig          ###   ########.fr       */
+/*   Created: 2022/05/25 16:02:48 by jmehlig           #+#    #+#             */
+/*   Updated: 2022/05/26 09:28:50 by jmehlig          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,11 @@
 // Bei keinem zweiten Quote, wird momentan eine Fehlermeldung zurueckgegeben, es muss zwar nicht wie in bash agieren, sollte aber "nicht interpretiert" werden?
 // Wenn ich in Doublequotes bin, sind Singlequotes egal!!!! Und umgekehrt!!!
 
-static void	quote_checker(char str, bool *dq, bool *sq)
+void	quote_checker(char str, bool *dq, bool *sq)
 {
 	if (str == '\'')
 	{
-		if (*dq == true)
+		if (*dq != true)
 		{
 			if (*sq == true)
 				*sq = false;
@@ -28,7 +28,7 @@ static void	quote_checker(char str, bool *dq, bool *sq)
 	}
 	if (str == '\"')
 	{
-		if (*sq == true)
+		if (*sq != true)
 		{
 			if (*dq == true)
 				*dq = false;

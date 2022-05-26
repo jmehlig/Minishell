@@ -6,7 +6,7 @@
 /*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 16:11:58 by hkalyonc          #+#    #+#             */
-/*   Updated: 2022/05/11 11:43:35 by hkalyonc         ###   ########.fr       */
+/*   Updated: 2022/05/20 10:17:29 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,14 +28,14 @@ void	free_ast_node(t_ast_node *ast_node)
 	bool	check_nodetype_with_nodepair;
 	bool	check_nodetype_with_string;
 
+	if (ast_node == NULL)
+		return ;
 	check_nodetype_with_nodepair = ast_node->type == NODETYPE_JOB
 			|| ast_node->type == NODETYPE_COMMAND
 			|| ast_node->type == NODETYPE_SIMPLECOMMAND
 			|| ast_node->type == NODETYPE_ARGUMENTS;
 	check_nodetype_with_string = check_nodetype_with_nodepair == false
 			&& ast_node->type != NODETYPE_EMPTY;
-	if (ast_node == NULL)
-		return ;
 	if (check_nodetype_with_nodepair)
 	{
 		free_ast_node(ast_node->value.node_pair.left);

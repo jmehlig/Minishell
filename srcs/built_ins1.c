@@ -6,7 +6,7 @@
 /*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 16:06:15 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/17 14:54:56 by hkalyonc         ###   ########.fr       */
+/*   Updated: 2022/05/26 08:39:52 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,6 @@ int	my_unset(char **arguments, t_list *my_envp)
 		free(join);
 		temp = temp->next;
 	}
-	ft_lstfree(&my_envp);
 	return (0);
 }
 
@@ -89,6 +88,7 @@ char	**check_local(char **arguments, t_list *local)
 			}
 			i++;
 		}
+		local = local->next;
 	}
 	return (arguments);
 }
@@ -127,6 +127,8 @@ int	my_export(char **arguments, t_list **my_envp, t_list *local)
 		}
 		j++;
 	}
+	// char *arguments3[4] = {"env"};
+	// my_env(*my_envp, arguments3);
 	if (arguments[1] == NULL)
 		my_env(*my_envp, arguments);
 	return (0);
@@ -245,10 +247,10 @@ t_list	*linked_envp(char *envp[])
 	int		i;
 
 	i = 1;
-	lst = ft_lstnew(envp[0]);
+	lst = ft_lstnew(ft_strdup(envp[0]));
 	while (envp[i] != NULL)
 	{
-		ft_lstadd_back(&lst, ft_lstnew(envp[i]));
+		ft_lstadd_back(&lst, ft_lstnew(ft_strdup(envp[i])));					//!!! not protected !!!
 		i++;
 	}
 	return (lst);
@@ -353,8 +355,8 @@ void	my_pwd(t_list *my_envp, char **arguments)
 
 // exit schliesst die shell und gibt Rueckmeldung ueber succesful oder unsuccsesful
 // noch nicht ganz richtig, erst mal Idee probieren
-void	my_exit(t_list *my_envp, char **arguments,
-	t_command_table *command_table)
+void	my_exit(t_list **my_envp, char **arguments,
+	t_command_table *command_table, t_list **local)
 {
 	bool	check_no_arguments;
 	bool	check_one_argument;
@@ -362,14 +364,17 @@ void	my_exit(t_list *my_envp, char **arguments,
 
 	check_no_arguments = arguments[1] == NULL;
 	check_one_argument = check_no_arguments == false && arguments[2] == NULL;
+	write(STDERR_FILENO, "exit\n", 5);
 	if (check_no_arguments)
 		exit_code = 0;
 	if (check_one_argument)
 		exit_code = (uint8_t) ft_atoi(arguments[1]);
 	if (check_no_arguments == true || check_one_argument == true)
 	{
+		//equal to exit_executor???
+		ft_lstclear(my_envp, free_content);
+		ft_lstclear(local, free_content);
 		free_command_table(command_table);
-		ft_lstclear(&my_envp, &del_lst_linked_env);
 		exit(exit_code);
 	}
 	else
