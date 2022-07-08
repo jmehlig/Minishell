@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstdelnode.c                                    :+:      :+:    :+:   */
+/*   ft_lstdelkey.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/10 19:03:30 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/06/08 13:29:42 by jmehlig          ###   ########.fr       */
+/*   Created: 2022/06/15 18:42:26 by hkalyonc          #+#    #+#             */
+/*   Updated: 2022/06/15 18:43:00 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-void	ft_lstdelnode(t_list **lst, void *key)
+void	ft_lstdelkey(t_list **lst, void *key, void (*del)(void *))
 {
 	t_list	*temp;
 	t_list	*prev;
@@ -23,7 +23,6 @@ void	ft_lstdelnode(t_list **lst, void *key)
 				ft_strlen(temp->content)) == 0))
 	{
 		*lst = temp->next;
-		free(temp);
 	}
 	else
 	{
@@ -36,6 +35,7 @@ void	ft_lstdelnode(t_list **lst, void *key)
 		if (temp == NULL)
 			return ;
 		prev->next = temp->next;
-		free(temp);
 	}
+	temp->next = NULL;
+	ft_lstclear(&temp, del);
 }

@@ -1,28 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_destroy.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/09 13:09:59 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/31 13:53:37 by jmehlig          ###   ########.fr       */
+/*   Created: 2022/06/15 18:38:12 by hkalyonc          #+#    #+#             */
+/*   Updated: 2022/06/15 18:39:48 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(void *content)
+void	ft_destroy(void **ptr)
 {
-	t_list	*element;
-
-	element = (t_list *)malloc(sizeof(t_list));
-	if (!element)
-		return (0);
-	if (element)
-	{
-		element->content = content;
-		element->next = 0;
-	}
-	return (element);
+	free(*ptr);
+	*ptr = NULL;
 }

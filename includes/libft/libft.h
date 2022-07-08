@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/03 18:54:53 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/11 11:17:12 by jmehlig          ###   ########.fr       */
+/*   Updated: 2022/06/17 14:23:41 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,6 +57,7 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strtrim(char const *s1, char const *set);
 char	*ft_strdup(const char *s1);
 char	*ft_strjoin(char const *s1, char const *s2);
+char	*ft_strjoin_free(char const *s1, char const *s2);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlcpy(char *dst, const char *src, size_t dstsize);
 size_t	ft_strlen(const char *str);
@@ -72,5 +73,14 @@ void	*ft_free(char *word);
 int		ft_splitdel(char ***split);
 void	ft_lstdelnode(t_list **lst, void *key);
 void	ft_lstfree(t_list **lst);
+char	*ft_malloc(int size);
+char	**ft_split_modified(char const *s, char c);
+void	ft_free_2d_array(void **array, size_t size_array);
+void	ft_free_2d_array_nullterminated(void **array);
+void	ft_destroy(void **ptr);
+char	*ft_remove_characters(const char *str, int index_start,
+			int amount_to_remove);
+void	ft_lstdelkey(t_list **lst, void *key, void (*del)(void *));
+int		ft_iswhitespace(int c);
 
 #endif

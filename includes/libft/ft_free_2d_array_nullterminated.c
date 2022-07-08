@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_lstnew.c                                        :+:      :+:    :+:   */
+/*   ft_free_2d_array_nullterminated.c                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/09 13:09:59 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/31 13:53:37 by jmehlig          ###   ########.fr       */
+/*   Created: 2022/06/08 15:38:08 by hkalyonc          #+#    #+#             */
+/*   Updated: 2022/06/08 15:39:00 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-t_list	*ft_lstnew(void *content)
+void	ft_free_2d_array_nullterminated(void **array)
 {
-	t_list	*element;
+	size_t	i;
 
-	element = (t_list *)malloc(sizeof(t_list));
-	if (!element)
-		return (0);
-	if (element)
+	if (array == NULL)
+		return ;
+	i = 0;
+	while (array[i])
 	{
-		element->content = content;
-		element->next = 0;
+		free(array[i]);
+		i++;
 	}
-	return (element);
+	free(array);
 }

@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+         #
+#    By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/05/03 16:05:55 by jmehlig           #+#    #+#              #
-#    Updated: 2022/05/11 11:14:58 by jmehlig          ###   ########.fr        #
+#    Updated: 2022/06/17 09:28:39 by hkalyonc         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -44,6 +44,7 @@ SRCS	=		ft_atoi.c \
 				ft_strchr.c \
 				ft_strdup.c \
 				ft_strjoin.c \
+				ft_strjoin_free.c \
 				ft_strlcpy.c \
 				ft_strlcat.c \
 				ft_strlen.c \
@@ -59,7 +60,15 @@ SRCS	=		ft_atoi.c \
 				ft_free_double.c \
 				ft_split_del.c \
 				ft_lstdelnode.c \
-				ft_lstfree.c
+				ft_lstfree.c \
+				ft_malloc.c \
+				ft_split_modified.c \
+				ft_free_2d_array.c \
+				ft_free_2d_array_nullterminated.c \
+				ft_destroy.c \
+				ft_remove_characters.c \
+				ft_lstdelkey.c \
+				ft_iswhitespace.c
 
 OBJS	=		$(SRCS:.c=.o)
 

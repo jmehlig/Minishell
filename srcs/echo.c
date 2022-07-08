@@ -3,18 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
+/*   By: hkalyonc <hkalyonc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/10 14:27:13 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/05/11 18:09:20 by jmehlig          ###   ########.fr       */
+/*   Updated: 2022/06/15 13:39:13 by hkalyonc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Wie werden mehrere Eingaben behandelt? Dazwischen Leerzeichen anscheinend
-// -nnnnnnnnnnn -n -n -n -n -n
-// -n-n-n-n fange ich gerade nicht ab, scheint nach bash so zu stimmen
 int	ft_echo(char **arguments)
 {
 	int	i;
@@ -25,13 +22,15 @@ int	ft_echo(char **arguments)
 		return (0);
 	i++;
 	option_n = 0;
-	while (arguments[i] != NULL && (option_input(arguments[i]) == 0 || ft_strncmp(arguments[1], "-n", 2) == 0))
+	while (arguments[i] != NULL && (option_input(arguments[i]) == 0))
 	{
 		i++;
 		option_n = 1;
 	}
 	while (arguments[i] != NULL)
 	{
+		if (arguments[i][0] == '#')
+			break ;
 		ft_putstr_fd(arguments[i], 1);
 		if (arguments[i][0] != '\0' && arguments[i + 1])
 			ft_putchar_fd(' ', 1);
@@ -42,7 +41,7 @@ int	ft_echo(char **arguments)
 	return (0);
 }
 
-int		option_input(char *builtin)
+int	option_input(char *builtin)
 {
 	int	i;
 	int	just_n;
@@ -59,4 +58,3 @@ int		option_input(char *builtin)
 	}
 	return (just_n);
 }
-

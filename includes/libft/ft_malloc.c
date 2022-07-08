@@ -1,42 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strjoin.c                                       :+:      :+:    :+:   */
+/*   ft_malloc.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jmehlig <jmehlig@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/05/09 13:08:12 by jmehlig           #+#    #+#             */
-/*   Updated: 2022/06/08 13:51:55 by jmehlig          ###   ########.fr       */
+/*   Created: 2022/05/30 20:25:30 by jmehlig           #+#    #+#             */
+/*   Updated: 2022/05/30 20:26:58 by jmehlig          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_malloc(int size)
 {
-	char	*ptr;
-	size_t	lens1;
-	size_t	lens2;
-	size_t	i;
+	char	*new_str;
 
-	if (!s1 || !s2)
-		return (0);
-	lens1 = ft_strlen(s1);
-	lens2 = ft_strlen(s2);
-	i = 0;
-	ptr = (char *)malloc(sizeof(char) * (lens1 + lens2 + 1));
-	if (!ptr)
-		return (0);
-	while (i < lens1)
-	{
-		ptr[i] = s1[i];
-		i++;
-	}
-	while (i < lens1 + lens2)
-	{
-		ptr[i] = s2[i - lens1];
-		i++;
-	}
-	ptr[i] = 0;
-	return (ptr);
+	new_str = malloc(size + 1);
+	if (!new_str)
+		return (NULL);
+	return (new_str);
 }
